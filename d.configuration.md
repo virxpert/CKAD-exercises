@@ -96,7 +96,7 @@ kubectl get cm configmap4 -o yaml
 
 ```bash
 kubectl create cm options --from-literal=var5=val5
-kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml > pod.yaml
+kubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml > pod.yaml
 vi pod.yaml
 ```
 
@@ -140,7 +140,7 @@ kubectl exec -it nginx -- env | grep option # will show 'option=val5'
 
 ```bash
 kubectl create configmap anotherone --from-literal=var6=val6 --from-literal=var7=val7
-kubectl run --restart=Never nginx --image=nginx -o yaml --dry-run > pod.yaml
+kubectl run --restart=Never nginx --image=nginx -o yaml --dry-run=client > pod.yaml
 vi pod.yaml
 ```
 
@@ -181,7 +181,7 @@ kubectl exec -it nginx -- env
 
 ```bash
 kubectl create configmap cmvolume --from-literal=var8=val8 --from-literal=var9=val9
-kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run > pod.yaml
+kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run=client > pod.yaml
 vi pod.yaml
 ```
 
@@ -212,6 +212,7 @@ status: {}
 ```
 
 ```bash
+kubectl create -f pod.yaml
 kubectl exec -it nginx -- /bin/sh
 cd /etc/lala
 ls # will show var8 var9
@@ -231,7 +232,7 @@ kubernetes.io > Documentation > Tasks > Configure Pods and Containers > [Configu
 <p>
 
 ```bash
-kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml > pod.yaml
+kubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml > pod.yaml
 vi pod.yaml
 ```
 
@@ -266,7 +267,7 @@ status: {}
 <p>
 
 ```bash
-kubectl run nginx --image=nginx --restart=Never --dry-run -o yaml > pod.yaml
+kubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml > pod.yaml
 vi pod.yaml
 ```
 
@@ -372,7 +373,7 @@ kubectl get secret mysecret2 -o jsonpath='{.data.username}{"\n"}' | base64 -d  #
 <p>
 
 ```bash
-kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run > pod.yaml
+kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run=client > pod.yaml
 vi pod.yaml
 ```
 
@@ -419,7 +420,7 @@ cat /etc/foo/username # shows admin
 
 ```bash
 kubectl delete po nginx
-kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run > pod.yaml
+kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run=client > pod.yaml
 vi pod.yaml
 ```
 
@@ -514,14 +515,14 @@ kubectl create -f sa.yaml
 <p>
 
 ```bash
-kubectl run nginx --image=nginx --restart=Never --serviceaccount=myuser -o yaml --dry-run > pod.yaml
+kubectl run nginx --image=nginx --restart=Never --serviceaccount=myuser -o yaml --dry-run=client > pod.yaml
 kubectl apply -f pod.yaml
 ```
 
 or you can add manually:
 
 ```bash
-kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run > pod.yaml
+kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run=client > pod.yaml
 vi pod.yaml
 ```
 

@@ -17,7 +17,7 @@ kubernetes.io > Documentation > Tasks > Configure Pods and Containers > [Configu
 Easiest way to do this is to create a template pod with:
 
 ```bash
-kubectl run busybox --image=busybox --restart=Never -o yaml --dry-run -- /bin/sh -c 'sleep 3600' > pod.yaml
+kubectl run busybox --image=busybox --restart=Never -o yaml --dry-run=client -- /bin/sh -c 'sleep 3600' > pod.yaml
 vi pod.yaml
 ```
 Copy paste the container definition and type the lines that have a comment in the end:
@@ -165,7 +165,7 @@ kubectl get pv # will show as 'Bound' as well
 Create a skeleton pod:
 
 ```bash
-kubectl run busybox --image=busybox --restart=Never -o yaml --dry-run -- /bin/sh -c 'sleep 3600' > pod.yaml
+kubectl run busybox --image=busybox --restart=Never -o yaml --dry-run=client -- /bin/sh -c 'sleep 3600' > pod.yaml
 vi pod.yaml
 ```
 
@@ -216,7 +216,9 @@ kubectl exec busybox -it -- cp /etc/passwd /etc/foo/passwd
 </p>
 </details>
 
-### Create a second pod which is identical with the one you just created (you can easily do it by changing the 'name' property on pod.yaml). Connect to it and verify that '/etc/foo' contains the 'passwd' file. Delete pods to cleanup
+### Create a second pod which is identical with the one you just created (you can easily do it by changing the 'name' property on pod.yaml). Connect to it and verify that '/etc/foo' contains the 'passwd' file. Delete pods to cleanup. Note: If you can't see the file from the second pod, can you figure out why? What would you do to fix that?
+
+
 
 <details><summary>show</summary>
 <p>
@@ -232,6 +234,18 @@ kubectl exec busybox2 -- ls /etc/foo # will show 'passwd'
 kubectl delete po busybox busybox2
 ```
 
+If the file doesn't show on the second pod but it shows on the first, it has most likely been scheduled on a different node.
+
+```bash
+# check which nodes the pods are on
+kubectl get po busybox -o wide
+kubectl get po busybox2 -o wide
+```
+
+If they are on different nodes, you won't see the file, because we used the `hostPath` volume type.
+If you need to access the same files in a multi-node cluster, you need a volume type that is independent of a specific node.
+There are lots of different types per cloud provider (see here)[https://kubernetes.io/docs/concepts/storage/persistent-volumes/#types-of-persistent-volumes], a general solution could be to use NFS.
+
 </p>
 </details>
 
@@ -242,7 +256,7 @@ kubectl delete po busybox busybox2
 
 ```bash
 kubectl run busybox --image=busybox --restart=Never -- sleep 3600
-kubectl cp busybox:/etc/passwd ./passwd # kubectl cp command
+kubectl cp busybox:etc/passwd ./passwd # kubectl cp command
 # previous command might report an error, feel free to ignore it since copy command works
 cat passwd
 ```
